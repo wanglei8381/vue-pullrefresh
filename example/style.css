@@ -1,0 +1,23 @@
+.btn-animation {
+    background-color: rgba(0,0,0,0.1);
+    opacity: 0.5;
+    -webkit-transform: scale(0.99);
+    transform: scale(0.99);
+}
+ul, ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.actions li {
+    display: flex;
+    display: -webkit-flex;
+    padding: 10px 15px;
+    border-bottom: 1px solid #ddd;
+}
+.actions li .title {
+    flex: 1;
+    -webkit-flex: 1;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
