@@ -19,10 +19,20 @@ module.exports = {
             cxt: null,//canvas上下文
             doms: {//dom节点
             },
-            isWaiting: false,//下拉刷新等待状态
-            isClose: false,//下拉刷新关闭状态
             count: 0//动画执行的次数
         };
+    },
+    props: {
+        top: {
+            type: Number,
+            required: false,
+            default: 0
+        },
+        color: {
+            type: String,
+            required: false,
+            default: '#027CFF'
+        }
     },
     methods: {
         drawArrowCircle: function (i) {
@@ -74,8 +84,6 @@ module.exports = {
         },
         handleMove: function (distinct) {
             if (distinct > 95) return;
-            this.isWaiting = false;
-            this.isClose = false;
             this.doms.rotateWrapper.style.top = distinct + 'px';
             this.doms.rotateCanvas.style.transform = 'rotate(' + distinct * 3 + 'deg)';
             this.drawArrowCircle(distinct / 30);
@@ -86,33 +94,38 @@ module.exports = {
                 this.touch.pause('touch:move').pause('touch:end');
                 //调用动画
                 window.requestAnimationFrame(this.drawCircle());
-                this.isWaiting = true;
-                this.isClose = false;
+                this.waiting();
                 this.$dispatch('pull-to-refresh', 1);
             } else {
-                this.isWaiting = false;
-                this.isClose = true;
+                this.close();
             }
         },
         close: function () {
-            this.isWaiting = false;
-            this.isClose = true;
+            this.classList.add('close');
+        },
+        waiting: function () {
+            this.classList.add('waiting');
+        }
+    },
+    events: {
+        'pull-to-refresh-waiting': function () {
+            this.waiting();
+            window.requestAnimationFrame(this.drawCircle());
+        },
+        'pull-to-refresh-close': function () {
+            this.classList.remove('waiting');
+            this.close();
             this.touch.resume('touch:move').resume('touch:end');
             window.cancelAnimationFrame(this.count);
         }
     },
-    events: {
-        'pull-to-refresh-close': function () {
-            this.close();
-        }
-    },
     ready: function () {
-
-        this.doms.rotateWrapper = this.$el.querySelector('#__rotate__wrapper');
-        this.doms.rotateCanvas = this.$el.querySelector('#__rotate__canvas');
+        this.doms.rotateWrapper = this.$el.querySelector('div');
+        this.doms.rotateCanvas = this.$el.querySelector('canvas');
+        this.classList = this.doms.rotateWrapper.classList;
         let cxt = this.doms.rotateCanvas.getContext('2d');
-        cxt.strokeStyle = this.config.color;
-        cxt.fillStyle = this.config.color;
+        cxt.strokeStyle = this.color;
+        cxt.fillStyle = this.color;
         cxt.lineWidth = this.config.lineWidth;
 
         this.cxt = cxt;
@@ -140,6 +153,10 @@ module.exports = {
 
         touch.on('scroll', ()=> {
             top = document.body.scrollTop === 0;
+        });
+
+        this.doms.rotateWrapper.addEventListener('webkitTransitionEnd', ()=> {
+            this.classList.remove('close');
         });
     }
 };
