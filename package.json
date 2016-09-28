@@ -1,6 +1,6 @@
 {
   "name": "vue-pullrefresh",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "description": "下拉刷新",
   "license": "MIT",
   "main": "index.js",
@@ -17,8 +17,13 @@
   "bugs": {
     "url": "https://github.com/wanglei8381/vue-pullrefresh/issues"
   },
+  "scripts": {
+    "move": "cp src/style.css src/template.html dist/",
+    "compile": "babel -d dist/ src/ --presets es2015",
+    "prepublish": "npm run move && npm run compile"
+  },
   "dependencies": {
-    "super-touch": "^0.0.2",
+    "super-touch": "^0.0.3",
     "vue": "^1.0.24"
   },
   "devDependencies": {
