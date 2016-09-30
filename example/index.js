@@ -8,7 +8,7 @@ new Vue({
         idx: 0
     },
     events: {
-        'pull-to-refresh': function (t) {
+        'pull-to-refresh': function () {
             setTimeout(() => {
                 this.$broadcast('pull-to-refresh-close');
                 this.idx = 20;
