@@ -66,7 +66,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        idx: 0
 	    },
 	    events: {
-	        'pull-to-refresh': function pullToRefresh(t) {
+	        'pull-to-refresh': function pullToRefresh() {
 	            var _this = this;
 	
 	            setTimeout(function () {
@@ -10516,24 +10516,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	            cxt.fill();
 	        },
 	        drawCircle: function drawCircle() {
-	            var k = 0;
 	            var cxt = this.cxt;
-	            var self = this;
+	            var _this = this;
+	            var index = 1;
+	            var a = 0;
+	            var flag = true;
 	            return function __drawCircle() {
 	                cxt.clearRect(0, 0, 50, 50);
-	                // cxt.beginPath();
-	                // cxt.strokeStyle = '#EEEEEE'
-	                // cxt.arc(25, 25, 15, 0, 2 * Math.PI, false);
-	                // cxt.stroke();
-	                // cxt.closePath();
-	
 	                cxt.beginPath();
-	                // cxt.strokeStyle = '#21DD44'
-	                cxt.arc(25, 25, 15, k * Math.PI, (k + 1.5) * Math.PI, false);
+	                if (flag) {
+	                    cxt.arc(25, 25, 15, a * Math.PI, easeInOut(index++, 0 + a, 1.7, 50) * Math.PI, false);
+	                } else {
+	                    cxt.arc(25, 25, 15, easeInOut(index++, 0 + a, 1.7, 50) * Math.PI, (1.7 + a) * Math.PI, false);
+	                }
 	                cxt.stroke();
 	                cxt.closePath();
-	                k = k + 0.1;
-	                self.count = window.requestAnimationFrame(__drawCircle);
+	                if (index >= 50) {
+	                    flag = !flag;
+	                    if (flag) {
+	                        a -= 0.4;
+	                    }
+	                    index = 1;
+	                }
+	                _this.count = requestAnimationFrame(__drawCircle);
 	            };
 	        },
 	        handleMove: function handleMove(distinct) {
@@ -10574,7 +10579,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    },
 	    ready: function ready() {
-	        var _this = this;
+	        var _this2 = this;
 	
 	        this.doms.rotateWrapper = this.$el.querySelector('div');
 	        this.doms.rotateCanvas = this.$el.querySelector('canvas');
@@ -10598,13 +10603,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	                if (deltaY < 0) return;
 	                res.e.preventDefault();
 	                var distinct = deltaY / 5;
-	                _this.handleMove(distinct);
+	                _this2.handleMove(distinct);
 	            }
 	        });
 	
 	        touch.on('touch:end', function (res) {
 	            var distinct = res.y2 - res.y1;
-	            _this.handleEnd(distinct / 5);
+	            _this2.handleEnd(distinct / 5);
 	        });
 	
 	        touch.on('scroll', function () {
@@ -10612,10 +10617,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	
 	        this.doms.rotateWrapper.addEventListener('webkitTransitionEnd', function () {
-	            _this.classList.remove('close');
+	            _this2.classList.remove('close');
 	        });
 	    }
 	};
+	
+	function easeInOut(t, b, c, d) {
+	    return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
+	}
 
 /***/ },
 /* 4 */
@@ -10652,7 +10661,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	
 	// module
-	exports.push([module.id, ".m-pull-refresh-container {\n  position: fixed;\n  width: 100%;\n  z-index: 1;\n  top: 0;\n}\n\n.m-pull-refresh-container .m-pull-refresh-wrapper {\n  transform: scale(0.7);\n  -webkit-transform: scale(0.7);\n  position: absolute;\n  z-index: 1;\n  left: 50%;\n  top: -80px;\n  width: 50px;\n  height: 50px;\n  background: #fff;\n  margin-left: -25px;\n  border-radius: 50%;\n  box-shadow: 1px 0 1px 1px #E8E8E8, 0 2px 10px 2px #E8E8E8, 0 -1px 1px #E8E8E8, -1px 0 1px #e8e8e8;\n}\n\n.m-pull-refresh-container .m-pull-refresh-wrapper.close {\n  transition: all .5s;\n  -webkit-transition: all .5s;\n  top: -80px;\n  transform: rotate(180deg) scale(0.3);\n  -webkit-transform: rotate(180deg) scale(0.3);\n}\n\n.m-pull-refresh-container .m-pull-refresh-wrapper.waiting {\n  transition: top .3s;\n  -webkit-transition: top .3s;\n  top: 30px;\n}", ""]);
+	exports.push([module.id, ".m-pull-refresh-container {\n  position: fixed;\n  width: 100%;\n  z-index: 1;\n  top: 0;\n}\n\n.m-pull-refresh-container .m-pull-refresh-wrapper {\n  transform: scale(0.7);\n  -webkit-transform: scale(0.7);\n  position: absolute;\n  z-index: 1;\n  left: 50%;\n  top: -80px;\n  width: 50px;\n  height: 50px;\n  background: #fff;\n  margin-left: -25px;\n  border-radius: 50%;\n  box-shadow: 1px 0 1px 1px #E8E8E8, 0 2px 10px 2px #E8E8E8, 0 -1px 1px #E8E8E8, -1px 0 1px #e8e8e8;\n}\n\n.m-pull-refresh-container .m-pull-refresh-wrapper.close {\n  transition: all .5s;\n  -webkit-transition: all .5s;\n  top: -80px;\n  transform: rotate(180deg) scale(0.3);\n  -webkit-transform: rotate(180deg) scale(0.3);\n}\n\n.m-pull-refresh-container .m-pull-refresh-wrapper.waiting {\n  transition: top .3s;\n  -webkit-transition: top .3s;\n  top: 30px;\n}\n\n.m-pull-refresh-container .m-pull-refresh-wrapper.waiting canvas {\n  animation: mycanvas 1s linear infinite;\n  -webkit-animation: mycanvas 1s linear infinite;\n}\n\n@keyframes mycanvas {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n\n@-webkit-keyframes mycanvas {\n  from {\n    -webkit-transform: rotate(0deg);\n  }\n  to {\n    -webkit-transform: rotate(360deg);\n  }\n}", ""]);
 	
 	// exports
 
@@ -11006,7 +11015,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.lastTimestamp = Date.now();
 	    var touch = e.touches[0];
 	    this.touch = touch;
-	    this.touch.el = 'tagName' in touch.target ? touch.target : touch.target.parentNode;
+	    this.touch.el = 'tagName' in touch.target ?
+	        touch.target : touch.target.parentNode;
 	    // if (e.touches && e.touches.length === 1 && this.x2) {
 	    //     this.x2 = this.y2 = undefined;
 	    // }
@@ -11094,7 +11104,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	function swipeDirection(x1, x2, y1, y2) {
-	    return Math.abs(x1 - x2) >= Math.abs(y1 - y2) ? x1 - x2 > 0 ? 'left' : 'right' : y1 - y2 > 0 ? 'up' : 'down';
+	    return Math.abs(x1 - x2) >=
+	    Math.abs(y1 - y2) ? (x1 - x2 > 0 ? 'left' : 'right') : (y1 - y2 > 0 ? 'up' : 'down')
 	}
 	
 	module.exports = Touch;

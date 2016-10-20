@@ -62,17 +62,29 @@ module.exports = {
             cxt.fill();
         },
         drawCircle: function () {
-            let k = 0;
             const cxt = this.cxt;
-            const self = this;
+            const _this = this;
+            let index = 1;
+            let a = 0;
+            let flag = true;
             return function __drawCircle() {
                 cxt.clearRect(0, 0, 50, 50);
                 cxt.beginPath();
-                cxt.arc(25, 25, 15, k * Math.PI, (k + 1.5) * Math.PI, false);
+                if (flag) {
+                    cxt.arc(25, 25, 15, a * Math.PI, easeInOut(index++, 0 + a, 1.7, 50) * Math.PI, false);
+                } else {
+                    cxt.arc(25, 25, 15, easeInOut(index++, 0 + a, 1.7, 50) * Math.PI, (1.7 + a) * Math.PI, false);
+                }
                 cxt.stroke();
                 cxt.closePath();
-                k = k + 0.1;
-                self.count = window.requestAnimationFrame(__drawCircle);
+                if (index >= 50) {
+                    flag = !flag;
+                    if (flag) {
+                        a -= 0.4;
+                    }
+                    index = 1;
+                }
+                _this.count = requestAnimationFrame(__drawCircle);
             };
         },
         handleMove: function (distinct) {
@@ -153,3 +165,7 @@ module.exports = {
         });
     }
 };
+
+function easeInOut(t, b, c, d) {
+    return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
+}

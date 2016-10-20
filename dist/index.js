@@ -63,24 +63,29 @@ module.exports = {
             cxt.fill();
         },
         drawCircle: function drawCircle() {
-            var k = 0;
             var cxt = this.cxt;
-            var self = this;
+            var _this = this;
+            var index = 1;
+            var a = 0;
+            var flag = true;
             return function __drawCircle() {
                 cxt.clearRect(0, 0, 50, 50);
-                // cxt.beginPath();
-                // cxt.strokeStyle = '#EEEEEE'
-                // cxt.arc(25, 25, 15, 0, 2 * Math.PI, false);
-                // cxt.stroke();
-                // cxt.closePath();
-
                 cxt.beginPath();
-                // cxt.strokeStyle = '#21DD44'
-                cxt.arc(25, 25, 15, k * Math.PI, (k + 1.5) * Math.PI, false);
+                if (flag) {
+                    cxt.arc(25, 25, 15, a * Math.PI, easeInOut(index++, 0 + a, 1.7, 50) * Math.PI, false);
+                } else {
+                    cxt.arc(25, 25, 15, easeInOut(index++, 0 + a, 1.7, 50) * Math.PI, (1.7 + a) * Math.PI, false);
+                }
                 cxt.stroke();
                 cxt.closePath();
-                k = k + 0.1;
-                self.count = window.requestAnimationFrame(__drawCircle);
+                if (index >= 50) {
+                    flag = !flag;
+                    if (flag) {
+                        a -= 0.4;
+                    }
+                    index = 1;
+                }
+                _this.count = requestAnimationFrame(__drawCircle);
             };
         },
         handleMove: function handleMove(distinct) {
@@ -121,7 +126,7 @@ module.exports = {
         }
     },
     ready: function ready() {
-        var _this = this;
+        var _this2 = this;
 
         this.doms.rotateWrapper = this.$el.querySelector('div');
         this.doms.rotateCanvas = this.$el.querySelector('canvas');
@@ -145,13 +150,13 @@ module.exports = {
                 if (deltaY < 0) return;
                 res.e.preventDefault();
                 var distinct = deltaY / 5;
-                _this.handleMove(distinct);
+                _this2.handleMove(distinct);
             }
         });
 
         touch.on('touch:end', function (res) {
             var distinct = res.y2 - res.y1;
-            _this.handleEnd(distinct / 5);
+            _this2.handleEnd(distinct / 5);
         });
 
         touch.on('scroll', function () {
@@ -159,7 +164,11 @@ module.exports = {
         });
 
         this.doms.rotateWrapper.addEventListener('webkitTransitionEnd', function () {
-            _this.classList.remove('close');
+            _this2.classList.remove('close');
         });
     }
 };
+
+function easeInOut(t, b, c, d) {
+    return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
+}

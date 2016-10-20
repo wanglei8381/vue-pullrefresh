@@ -33,3 +33,26 @@
   -webkit-transition: top .3s;
   top: 30px;
 }
+
+.m-pull-refresh-container .m-pull-refresh-wrapper.waiting canvas {
+  animation: mycanvas 1s linear infinite;
+  -webkit-animation: mycanvas 1s linear infinite;
+}
+
+@keyframes mycanvas {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes mycanvas {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
